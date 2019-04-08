@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'AppTrace_Example' do
+  pod 'AppTrace', :path => '../'
+
+  target 'AppTrace_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
