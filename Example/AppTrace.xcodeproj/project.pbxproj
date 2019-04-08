@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2EF38F26E682CDA84E99AE15 /* Pods_AppTrace_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2210F504E1BF1722036F96BB /* Pods_AppTrace_Example.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -21,9 +20,10 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		7145C51AA9B8F6C58818513C /* libPods-AppTrace_Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE88CCF5F71AA450546A0C41 /* libPods-AppTrace_Tests.a */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
-		EC813092D834A411E31009B3 /* Pods_AppTrace_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8BBB5C6ED1B125CAB36873 /* Pods_AppTrace_Tests.framework */; };
+		B2DF33CF8648127C22C327DE /* libPods-AppTrace_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB5C574748F9A9F609FB0DA /* libPods-AppTrace_Example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,8 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2112A5192FF5BDA79626185C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		2210F504E1BF1722036F96BB /* Pods_AppTrace_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppTrace_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2112A5192FF5BDA79626185C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		28FB9A6166D65B1AC7AAB3A2 /* Pods-AppTrace_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppTrace_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* AppTrace_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppTrace_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -61,10 +60,11 @@
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		8B09EDC4C3C167FB46E611B0 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		92D05C58F8317D1F991B2E03 /* AppTrace.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = AppTrace.podspec; path = ../AppTrace.podspec; sourceTree = "<group>"; };
-		9D8BBB5C6ED1B125CAB36873 /* Pods_AppTrace_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppTrace_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B09EDC4C3C167FB46E611B0 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		92D05C58F8317D1F991B2E03 /* AppTrace.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = AppTrace.podspec; path = ../AppTrace.podspec; sourceTree = "<group>"; };
 		A45BB04BB4F7BEEBC40E41DB /* Pods-AppTrace_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppTrace_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppTrace_Tests/Pods-AppTrace_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		AE88CCF5F71AA450546A0C41 /* libPods-AppTrace_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AppTrace_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAB5C574748F9A9F609FB0DA /* libPods-AppTrace_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AppTrace_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC2631918CD5776BB0B37913 /* Pods-AppTrace_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppTrace_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppTrace_Tests/Pods-AppTrace_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		CAC35B72C764BB54AC402827 /* Pods-AppTrace_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppTrace_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,7 +77,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				2EF38F26E682CDA84E99AE15 /* Pods_AppTrace_Example.framework in Frameworks */,
+				B2DF33CF8648127C22C327DE /* libPods-AppTrace_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,7 +88,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				EC813092D834A411E31009B3 /* Pods_AppTrace_Tests.framework in Frameworks */,
+				7145C51AA9B8F6C58818513C /* libPods-AppTrace_Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,8 +134,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				2210F504E1BF1722036F96BB /* Pods_AppTrace_Example.framework */,
-				9D8BBB5C6ED1B125CAB36873 /* Pods_AppTrace_Tests.framework */,
+				BAB5C574748F9A9F609FB0DA /* libPods-AppTrace_Example.a */,
+				AE88CCF5F71AA450546A0C41 /* libPods-AppTrace_Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -207,7 +207,6 @@
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				75668CD29F948220A2C72F17 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -247,6 +246,10 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = chenzhengxu2;
 				TargetAttributes = {
+					6003F589195388D20070C39A = {
+						DevelopmentTeam = 2RZ2KAJRS7;
+						ProvisioningStyle = Manual;
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -294,24 +297,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		75668CD29F948220A2C72F17 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AppTrace/AppTrace.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppTrace.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		AC83E1A5EA4303EF53DCADA1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -485,12 +470,15 @@
 			baseConfigurationReference = 28FB9A6166D65B1AC7AAB3A2 /* Pods-AppTrace_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 2RZ2KAJRS7;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppTrace/AppTrace-Prefix.pch";
 				INFOPLIST_FILE = "AppTrace/AppTrace-Info.plist";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = WYB_Wildcard_Development;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -500,12 +488,15 @@
 			baseConfigurationReference = CAC35B72C764BB54AC402827 /* Pods-AppTrace_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppTrace/AppTrace-Prefix.pch";
 				INFOPLIST_FILE = "AppTrace/AppTrace-Info.plist";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
