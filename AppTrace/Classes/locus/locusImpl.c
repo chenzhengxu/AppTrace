@@ -34,8 +34,7 @@ static pthread_key_t _thread_lr_stack_key;
 static pthread_key_t _thread_switch_key;
 static char _log_path[1024];
 static FILE * _log_file = NULL;
-static uint64_t begin_;
-static mach_timebase_info_data_t timeinfo_;
+static long long begin_;
 static __uint64_t main_thread_id=0;
 static LCSFilterBlock _filter_block = NULL;
 __unused static id (*orig_objc_msgSend)(id, SEL, ...);
@@ -59,6 +58,13 @@ void lcs_close()
     pthread_setspecific(_thread_switch_key, &lcs_switch_close);
 }
 
+long long lcs_getCurrentTime() {
+    struct timeval te;
+    gettimeofday(&te, NULL);
+    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000;
+    return milliseconds;
+}
+
 void write_method_log(char* obj, char* sel, char *ph) {
     // thread_id
     pthread_t thread = pthread_self();
@@ -68,17 +74,17 @@ void write_method_log(char* obj, char* sel, char *ph) {
         thread_id = 0;
     }
     // elapsed
-    uint64_t time = mach_absolute_time() * timeinfo_.numer / timeinfo_.denom;
-    uint64_t elapsed = (time - begin_ )/ 1000.0;
+    uint64_t time = lcs_getCurrentTime();
+    uint64_t elapsed = (time - begin_)*1000;
     // [class]sel
     unsigned long repl_len = strlen(obj) + strlen(sel) + 10;
     char *repl_name = malloc(repl_len);
     snprintf(repl_name, repl_len, "[%s]%s", obj, sel);
     // print
-    printf("{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
-//    dispatch_async(queue_, ^{
-//        fprintf(_log_file, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
-//    });
+//    printf("{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
+    dispatch_async(queue_, ^{
+        fprintf(_log_file, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
+    });
 }
 
 void before_objc_msgSend(id self, SEL sel, ...) {
@@ -329,8 +335,7 @@ void lcs_start(LCSFilterBlock filter, char* log_path) {
     fprintf(_log_file, "[\n");
     
     queue_ = dispatch_queue_create("apptrace.queue", DISPATCH_QUEUE_SERIAL);
-    mach_timebase_info(&timeinfo_);
-    begin_ = mach_absolute_time() * timeinfo_.numer / timeinfo_.denom;
+    begin_ = lcs_getCurrentTime();
     _main_ptread = pthread_self();
     pthread_threadid_np(_main_ptread,&main_thread_id);
     pthread_key_create(&_thread_switch_key, NULL);
