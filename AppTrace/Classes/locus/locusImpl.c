@@ -36,7 +36,7 @@ static char _log_path[1024];
 static FILE * _log_file = NULL;
 static long long begin_;
 static __uint64_t main_thread_id=0;
-static LCSFilterBlock _filter_block = NULL;
+static int time_barrier_milliseconds = 60;
 __unused static id (*orig_objc_msgSend)(id, SEL, ...);
 dispatch_queue_t queue_;
 
@@ -46,6 +46,7 @@ typedef struct {
     uintptr_t lr;
     char* obj;
     char* sel;
+    uint64_t begin_elapsed;
 } thread_lr_stack;
 
 void lcs_open()
@@ -65,7 +66,7 @@ long long lcs_getCurrentTime() {
     return milliseconds;
 }
 
-void write_method_log(char* obj, char* sel, char *ph) {
+void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endElapsed) {
     // thread_id
     pthread_t thread = pthread_self();
     __uint64_t thread_id=0;
@@ -73,42 +74,38 @@ void write_method_log(char* obj, char* sel, char *ph) {
     if (main_thread_id == thread_id) {
         thread_id = 0;
     }
-    // elapsed
-    uint64_t time = lcs_getCurrentTime();
-    uint64_t elapsed = (time - begin_)*1000;
     // [class]sel
     unsigned long repl_len = strlen(obj) + strlen(sel) + 10;
     char *repl_name = malloc(repl_len);
     snprintf(repl_name, repl_len, "[%s]%s", obj, sel);
     // print
-//    printf("{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
+    char begin_str[255];
+    char end_str[255];
+    sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "B", thread_id, beginElapsed);
+    sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "E", thread_id, endElapsed);
+    unsigned long begin_length = strlen(begin_str);
+    unsigned long end_length = strlen(end_str);
+    unsigned long length = begin_length + end_length + 10;
+    char *log = malloc(length);
+    snprintf(log, length, "%s%s", begin_str, end_str);
+
+//    printf("%s", log);
+    
     dispatch_async(queue_, ^{
-        fprintf(_log_file, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, ph, thread_id, elapsed);
+        fprintf(_log_file, "%s", log);
+        free(log);
     });
+    
+    free(repl_name);
 }
 
-void before_objc_msgSend(id self, SEL sel, ...) {
-    void* p_switch = pthread_getspecific(_thread_switch_key);
-    int lcs_switch = 1;
-    if (p_switch == NULL) {
-        lcs_open();
-    } else {
-        lcs_switch = *(int *)p_switch;
-    }
-    if (lcs_print > 0 && lcs_switch > 0 && _filter_block != NULL) {
-        lcs_close();
-        int result = 0;
-        result = _filter_block((char *)object_getClassName(self), (char *)sel);
-        if (result > 0) {
-            write_method_log((char *)object_getClassName(self), (char *)sel, "B");
-        }
-        lcs_open();
-    }
-}
+void before_objc_msgSend(id self, SEL sel, ...) {}
 
 uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
 {
     thread_lr_stack* ls = pthread_getspecific(_thread_lr_stack_key);
+    uint64_t time = lcs_getCurrentTime();
+    uint64_t elapsed = (time - begin_)*1000;
     if (ls == NULL) {
         ls = malloc(sizeof(thread_lr_stack));
         ls->pre = NULL;
@@ -116,8 +113,15 @@ uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
         ls->lr = lr;
         ls->obj = (char *)object_getClassName(self);
         ls->sel = (char *)sel;
+        ls->begin_elapsed = elapsed;
         pthread_setspecific(_thread_lr_stack_key, (void *)ls);
     } else {
+//        thread_lr_stack* next = NULL;
+//        if (ls->next == NULL) {
+//            next = malloc(sizeof(thread_lr_stack));
+//        } else {
+//            next = ls->next;
+//        }
         thread_lr_stack* next = malloc(sizeof(thread_lr_stack));
         ls->next = next;
         next->pre = ls;
@@ -125,6 +129,7 @@ uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
         next->lr = lr;
         next->obj = (char *)object_getClassName(self);
         next->sel = (char *)sel;
+        next->begin_elapsed = elapsed;
         pthread_setspecific(_thread_lr_stack_key, (void *)next);
     }
     return (uintptr_t)orig_objc_msgSend;
@@ -135,16 +140,13 @@ uintptr_t get_lr() {
     pthread_setspecific(_thread_lr_stack_key, (void *)ls->pre);
     uintptr_t lr = ls->lr;
     // log
-    void* p_switch = pthread_getspecific(_thread_switch_key);
-    int lcs_switch = *(int *)p_switch;
-    if (lcs_print > 0 && lcs_switch > 0 && _filter_block != NULL) {
-        lcs_close();
-        int result = 0;
-        result = _filter_block((char *)ls->obj, (char *)ls->sel);
-        if (result > 0) {
-            write_method_log((char *)ls->obj, (char *)ls->sel, "E");
+    if (lcs_print > 0) {
+        uint64_t time = lcs_getCurrentTime();
+        uint64_t elapsed = (time - begin_)*1000;
+        uint64_t interval = elapsed - ls->begin_elapsed;
+        if (interval > time_barrier_milliseconds*1000) {
+            write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
         }
-        lcs_open();
     }
     free(ls);
     return lr;
@@ -318,10 +320,8 @@ __asm__  (
     }
 #endif
 
-void lcs_start(LCSFilterBlock filter, char* log_path) {
+void lcs_start(char* log_path) {
     lcs_resume_print();
-    
-    _filter_block = filter;
     
     memset(_log_path, 0, 1024);
     memcpy(_log_path, log_path, strlen(log_path));
@@ -342,8 +342,3 @@ void lcs_start(LCSFilterBlock filter, char* log_path) {
     pthread_key_create(&_thread_lr_stack_key, NULL);
     rebind_symbols((struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
 }
-
-//const int N = 16;
-//static char *targets[N] = { "_", "NS", "CUI", "UI", "OS", "CA", "CF", "nil", "AV", "FBS", "Mobile", "BS", "NWConcrete", "BKS", "CPBitmapStore", "Coale" };
-//const int M = 40;
-//static char *selectors[M] = { "_", "alloc", "init", "superview", "view", "auto", "retain", "app", "present", "story", "content", "load", "is", "next", "child", "method", "layer", "root", "level", "did", "sub", "window", "set", "add", "layout", "class", "contain", "hash", "release", "enable", "navigationController", "parentViewController", "firstResponder", "respondsToSelector:", "traitCollection", "interfaceOrientation", "localizedString", "doesOverride", "modalPresentationStyle", "screen" };

@@ -11,7 +11,7 @@
 
 typedef int(^LCSFilterBlock)(char* className, char* selName);
 
-void lcs_start(LCSFilterBlock filter, char* log_path);
+void lcs_start(char* log_path);
 void lcs_stop_print(void);
 void lcs_resume_print(void);
 
