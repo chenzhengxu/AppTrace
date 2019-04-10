@@ -8,7 +8,7 @@
 
 #import "NEPViewController.h"
 
-@interface NEPViewController ()
+@interface NEPViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @end
 
@@ -17,7 +17,31 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    UITableView *tv = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    tv.delegate = self;
+    tv.dataSource = self;
+    [self.view addSubview:tv];
+    
+    [self methodA];
+}
+
+- (void)methodA {
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 20;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    if (!cell) {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    }
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", indexPath.row];
+    return cell;
 }
 
 - (void)didReceiveMemoryWarning

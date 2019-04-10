@@ -8,9 +8,11 @@
 
 @import UIKit;
 #import "NEPAppDelegate.h"
+#import "AppTrace.h"
 
 int main(int argc, char * argv[])
 {
+    [AppTrace startTrace];
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([NEPAppDelegate class]));
     }
