@@ -30,17 +30,13 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '8.0'
 
-  s.requires_arc = false
+#s.requires_arc = false
 
-  s.requires_arc = ['AppTrace/Classes/ARC/**/*.m']
+#s.requires_arc = ['AppTrace/Classes/ARC/**/*.m']
 
   s.source_files = 'AppTrace/Classes/**/*'
 
   s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
-  s.xcconfig = {
-    'CLANG_CXX_LANGUAGE_STANDARD' => 'c++11',
-    'CLANG_CXX_LIBRARY' => 'libc++'
-  }
   s.library = 'c++'
   s.frameworks = 'UIKit', 'Foundation'
 end

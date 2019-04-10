@@ -11,6 +11,6 @@
 
 typedef int(^LCSFilterBlock)(char* className, char* selName);
 
-void lcs_start(LCSFilterBlock block);
+void lcs_start(LCSFilterBlock beginFilterBlock, LCSFilterBlock endFilterBlock);
 
 #endif /* hookObjcSend_h */
