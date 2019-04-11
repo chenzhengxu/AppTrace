@@ -73,8 +73,8 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
     // print
     char begin_str[512];
     char end_str[512];
-    sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%s,\"ts\":%llu},\n", repl_name, "B", threadName, beginElapsed);
-    sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%s,\"ts\":%llu},\n", repl_name, "E", threadName, endElapsed);
+    sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":\"%s\",\"ts\":%llu},\n", repl_name, "B", threadName, beginElapsed);
+    sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":\"%s\",\"ts\":%llu},\n", repl_name, "E", threadName, endElapsed);
     unsigned long begin_length = strlen(begin_str);
     unsigned long end_length = strlen(end_str);
     unsigned long length = begin_length + end_length + 10;
