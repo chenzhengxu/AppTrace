@@ -7,12 +7,14 @@
 //
 
 #import "NEPAppDelegate.h"
+#import "DoraemonManager.h"
 
 @implementation NEPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [[DoraemonManager shareInstance] install];
     return YES;
 }
 

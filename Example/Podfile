@@ -4,6 +4,7 @@ platform :ios, '8.0'
 target 'AppTrace_Example' do
   pod 'AppTrace', :path => '../'
 
+  pod 'DoraemonKit', '1.1.7'
   target 'AppTrace_Tests' do
     inherit! :search_paths
 
