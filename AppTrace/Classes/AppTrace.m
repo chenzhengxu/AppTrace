@@ -7,7 +7,6 @@
 
 #import "AppTrace.h"
 #include "locusImpl.h"
-#import <objc/runtime.h>
 
 @implementation AppTrace
 
@@ -23,6 +22,10 @@
     char *log_path = (char *)[[work_dir stringByAppendingPathComponent:log_name] UTF8String];
     
     lcs_start(log_path);
+}
+
++ (void)setMinDuration:(int)minDuration {
+    method_min_duration = minDuration * 1000;
 }
 
 @end

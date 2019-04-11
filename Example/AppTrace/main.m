@@ -12,6 +12,7 @@
 
 int main(int argc, char * argv[])
 {
+    [AppTrace setMinDuration:3];
     [AppTrace startTrace];
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([NEPAppDelegate class]));

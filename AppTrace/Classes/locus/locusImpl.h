@@ -9,7 +9,7 @@
 #ifndef hookObjcSend_h
 #define hookObjcSend_h
 
-typedef int(^LCSFilterBlock)(char* className, char* selName);
+static int method_min_duration = 1 * 1000; // 1 milliseconds
 
 void lcs_start(char* log_path);
 void lcs_stop_print(void);

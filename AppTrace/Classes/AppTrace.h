@@ -11,4 +11,7 @@
 
 + (void)startTrace;
 
+// 设置打印最小方法执行时间 单位毫秒 默认为1毫秒
++ (void)setMinDuration:(int)minDuration;
+
 @end

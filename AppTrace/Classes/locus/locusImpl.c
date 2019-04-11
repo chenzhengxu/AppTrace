@@ -30,15 +30,11 @@
 static pthread_t _main_ptread;
 
 static int lcs_print = 0;
-static int lcs_switch_open = 1;
-static int lcs_switch_close = 0;
 static pthread_key_t _thread_lr_stack_key;
-static pthread_key_t _thread_switch_key;
 static char _log_path[1024];
 static FILE * _log_file = NULL;
 static long long begin_;
 static __uint64_t main_thread_id=0;
-static int interval_timer_barrier = 5 * 1000; // 5 milliseconds
 __unused static id (*orig_objc_msgSend)(id, SEL, ...);
 dispatch_queue_t queue_;
 
@@ -50,16 +46,6 @@ typedef struct {
     char* sel;
     uint64_t begin_elapsed;
 } thread_lr_stack;
-
-void lcs_open()
-{
-    pthread_setspecific(_thread_switch_key, &lcs_switch_open);
-}
-
-void lcs_close()
-{
-    pthread_setspecific(_thread_switch_key, &lcs_switch_close);
-}
 
 long long lcs_getCurrentTime() {
     struct timeval te;
@@ -93,9 +79,8 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
     snprintf(log, length, "%s%s", begin_str, end_str);
 
 //    printf("%s", log);
-    
+    free(repl_name);
     dispatch_async(queue_, ^{
-        free(repl_name);
         fprintf(_log_file, "%s", log);
         free(log);
     });
@@ -158,7 +143,8 @@ uintptr_t get_lr() {
         uint64_t elapsed = time - begin_;
         uint64_t interval = elapsed - ls->begin_elapsed;
 //        printf("%s %s %llu %llu\n", (char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
-        if (interval > interval_timer_barrier) {
+        // 时间限制 为了减少log数据量
+        if (interval > method_min_duration) {
             write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
         }
     }
@@ -166,6 +152,7 @@ uintptr_t get_lr() {
     __uint64_t thread_id=0;
     pthread_threadid_np(thread,&thread_id);
     if (main_thread_id != thread_id) {
+        // 非主线程的应当释放
         free(ls);
     }
     return lr;
@@ -357,8 +344,7 @@ void lcs_start(char* log_path) {
     dispatch_set_target_queue(queue_, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
     begin_ = lcs_getCurrentTime();
     _main_ptread = pthread_self();
-    pthread_threadid_np(_main_ptread,&main_thread_id);
-    pthread_key_create(&_thread_switch_key, NULL);
+    pthread_threadid_np(_main_ptread, &main_thread_id);
     pthread_key_create(&_thread_lr_stack_key, NULL);
     
 //    rebind_symbols((struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
