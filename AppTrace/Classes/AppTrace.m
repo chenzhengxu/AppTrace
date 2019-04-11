@@ -6,7 +6,7 @@
 //
 
 #import "AppTrace.h"
-#include "locusImpl.h"
+#include "AppTraceImpl.h"
 
 @implementation AppTrace
 

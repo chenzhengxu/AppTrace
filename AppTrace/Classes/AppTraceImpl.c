@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Family Fan. All rights reserved.
 //
 
-#include "locusImpl.h"
+#include "AppTraceImpl.h"
 
 #include "fishhook.h"
 #include <pthread.h>
