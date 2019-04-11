@@ -24,6 +24,8 @@
 #include <dispatch/dispatch.h>
 #import <objc/runtime.h>
 #include <mach/mach_time.h>
+#include <dlfcn.h>
+#include <mach-o/dyld.h>
 
 static pthread_t _main_ptread;
 
@@ -36,7 +38,6 @@ static char _log_path[1024];
 static FILE * _log_file = NULL;
 static long long begin_;
 static __uint64_t main_thread_id=0;
-static int time_barrier_milliseconds = 60;
 __unused static id (*orig_objc_msgSend)(id, SEL, ...);
 dispatch_queue_t queue_;
 
@@ -117,15 +118,26 @@ uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
         pthread_setspecific(_thread_lr_stack_key, (void *)ls);
     } else {
         thread_lr_stack* next = NULL;
-        if (ls->next == NULL) {
+
+        pthread_t thread = pthread_self();
+        __uint64_t thread_id=0;
+        pthread_threadid_np(thread,&thread_id);
+        // 主线程的栈可以复用
+        if (main_thread_id == thread_id) {
+            if (ls->next == NULL) {
+                next = malloc(sizeof(thread_lr_stack));
+                ls->next = next;
+                next->next = NULL;
+                next->pre = ls;
+            } else {
+                next = ls->next;
+            }
+        } else {
             next = malloc(sizeof(thread_lr_stack));
             ls->next = next;
             next->next = NULL;
             next->pre = ls;
-        } else {
-            next = ls->next;
         }
-//        thread_lr_stack* next = malloc(sizeof(thread_lr_stack));
         next->lr = lr;
         next->obj = (char *)object_getClassName(self);
         next->sel = (char *)sel;
@@ -143,13 +155,14 @@ uintptr_t get_lr() {
     if (lcs_print > 0) {
         uint64_t time = lcs_getCurrentTime();
         uint64_t elapsed = (time - begin_)*1000;
-        uint64_t interval = elapsed - ls->begin_elapsed;
-        if (interval > time_barrier_milliseconds*1000) {
-//            printf("%s %s %llu %llu %llu\n", (char *)ls->obj, (char *)ls->sel, elapsed, ls->begin_elapsed, interval);
-            write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
-        }
+        write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
     }
-//    free(ls);
+    pthread_t thread = pthread_self();
+    __uint64_t thread_id=0;
+    pthread_threadid_np(thread,&thread_id);
+    if (main_thread_id != thread_id) {
+        free(ls);
+    }
     return lr;
 }
 
@@ -341,5 +354,13 @@ void lcs_start(char* log_path) {
     pthread_threadid_np(_main_ptread,&main_thread_id);
     pthread_key_create(&_thread_switch_key, NULL);
     pthread_key_create(&_thread_lr_stack_key, NULL);
-    rebind_symbols((struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
+    
+//    rebind_symbols((struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
+    int index = 0;
+#ifdef __LP64__
+    index = 1;
+#endif
+    const struct mach_header *header = _dyld_get_image_header(index);
+    intptr_t slide = _dyld_get_image_vmaddr_slide(index);
+    rebind_symbols_image(header, slide, (struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
 }
