@@ -60,8 +60,11 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
     pthread_t thread = pthread_self();
     __uint64_t thread_id=0;
     pthread_threadid_np(thread,&thread_id);
+    char threadName[32];
     if (main_thread_id == thread_id) {
-        thread_id = 0;
+        sprintf(threadName, "%s", "Main");
+    } else {
+        sprintf(threadName, "Sub[%llu]", thread_id);
     }
     // [class]sel
     unsigned long repl_len = strlen(obj) + strlen(sel) + 10;
@@ -70,8 +73,8 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
     // print
     char begin_str[512];
     char end_str[512];
-    sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "B", thread_id, beginElapsed);
-    sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "E", thread_id, endElapsed);
+    sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%s,\"ts\":%llu},\n", repl_name, "B", threadName, beginElapsed);
+    sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%s,\"ts\":%llu},\n", repl_name, "E", threadName, endElapsed);
     unsigned long begin_length = strlen(begin_str);
     unsigned long end_length = strlen(end_str);
     unsigned long length = begin_length + end_length + 10;
