@@ -38,6 +38,7 @@ static char _log_path[1024];
 static FILE * _log_file = NULL;
 static long long begin_;
 static __uint64_t main_thread_id=0;
+static int interval_timer_barrier = 5 * 1000; // 5 milliseconds
 __unused static id (*orig_objc_msgSend)(id, SEL, ...);
 dispatch_queue_t queue_;
 
@@ -63,9 +64,9 @@ void lcs_close()
 long long lcs_getCurrentTime() {
     struct timeval te;
     gettimeofday(&te, NULL);
-    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000;
-//    printf("%lld\n", milliseconds);
-    return milliseconds;
+    long long microseconds = te.tv_sec*1000*1000LL + te.tv_usec;
+//    printf("%lld\n", microseconds);
+    return microseconds;
 }
 
 void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endElapsed) {
@@ -106,7 +107,7 @@ uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
 {
     thread_lr_stack* ls = pthread_getspecific(_thread_lr_stack_key);
     uint64_t time = lcs_getCurrentTime();
-    uint64_t elapsed = (time - begin_)*1000;
+    uint64_t elapsed = time - begin_;
     if (ls == NULL) {
         ls = malloc(sizeof(thread_lr_stack));
         ls->pre = NULL;
@@ -154,8 +155,12 @@ uintptr_t get_lr() {
     // log
     if (lcs_print > 0) {
         uint64_t time = lcs_getCurrentTime();
-        uint64_t elapsed = (time - begin_)*1000;
-        write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
+        uint64_t elapsed = time - begin_;
+        uint64_t interval = elapsed - ls->begin_elapsed;
+//        printf("%s %s %llu %llu\n", (char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
+        if (interval > interval_timer_barrier) {
+            write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
+        }
     }
     pthread_t thread = pthread_self();
     __uint64_t thread_id=0;
@@ -349,6 +354,7 @@ void lcs_start(char* log_path) {
     fprintf(_log_file, "[\n");
     
     queue_ = dispatch_queue_create("apptrace.queue", DISPATCH_QUEUE_SERIAL);
+    dispatch_set_target_queue(queue_, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
     begin_ = lcs_getCurrentTime();
     _main_ptread = pthread_self();
     pthread_threadid_np(_main_ptread,&main_thread_id);
@@ -357,7 +363,7 @@ void lcs_start(char* log_path) {
     
 //    rebind_symbols((struct rebinding[1]){{"objc_msgSend", hook_objc_msgSend, (void *)&orig_objc_msgSend}}, 1);
     int index = 0;
-#ifdef __LP64__
+#if TARGET_IPHONE_SIMULATOR
     index = 1;
 #endif
     const struct mach_header *header = _dyld_get_image_header(index);
