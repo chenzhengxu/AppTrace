@@ -63,6 +63,7 @@ long long lcs_getCurrentTime() {
     struct timeval te;
     gettimeofday(&te, NULL);
     long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000;
+//    printf("%lld\n", milliseconds);
     return milliseconds;
 }
 
@@ -79,8 +80,8 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
     char *repl_name = malloc(repl_len);
     snprintf(repl_name, repl_len, "[%s]%s", obj, sel);
     // print
-    char begin_str[255];
-    char end_str[255];
+    char begin_str[512];
+    char end_str[512];
     sprintf(begin_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "B", thread_id, beginElapsed);
     sprintf(end_str, "{\"name\":\"%s\",\"cat\":\"catname\",\"ph\":\"%s\",\"pid\":666,\"tid\":%llu,\"ts\":%llu},\n", repl_name, "E", thread_id, endElapsed);
     unsigned long begin_length = strlen(begin_str);
@@ -92,11 +93,10 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
 //    printf("%s", log);
     
     dispatch_async(queue_, ^{
+        free(repl_name);
         fprintf(_log_file, "%s", log);
         free(log);
     });
-    
-    free(repl_name);
 }
 
 void before_objc_msgSend(id self, SEL sel, ...) {}
@@ -116,16 +116,16 @@ uintptr_t save_lr(id self, SEL sel, uintptr_t lr)
         ls->begin_elapsed = elapsed;
         pthread_setspecific(_thread_lr_stack_key, (void *)ls);
     } else {
-//        thread_lr_stack* next = NULL;
-//        if (ls->next == NULL) {
-//            next = malloc(sizeof(thread_lr_stack));
-//        } else {
-//            next = ls->next;
-//        }
-        thread_lr_stack* next = malloc(sizeof(thread_lr_stack));
-        ls->next = next;
-        next->pre = ls;
-        next->next = NULL;
+        thread_lr_stack* next = NULL;
+        if (ls->next == NULL) {
+            next = malloc(sizeof(thread_lr_stack));
+            ls->next = next;
+            next->next = NULL;
+            next->pre = ls;
+        } else {
+            next = ls->next;
+        }
+//        thread_lr_stack* next = malloc(sizeof(thread_lr_stack));
         next->lr = lr;
         next->obj = (char *)object_getClassName(self);
         next->sel = (char *)sel;
@@ -145,10 +145,11 @@ uintptr_t get_lr() {
         uint64_t elapsed = (time - begin_)*1000;
         uint64_t interval = elapsed - ls->begin_elapsed;
         if (interval > time_barrier_milliseconds*1000) {
+//            printf("%s %s %llu %llu %llu\n", (char *)ls->obj, (char *)ls->sel, elapsed, ls->begin_elapsed, interval);
             write_method_log((char *)ls->obj, (char *)ls->sel, ls->begin_elapsed, elapsed);
         }
     }
-    free(ls);
+//    free(ls);
     return lr;
 }
 
