@@ -31,14 +31,6 @@
 
 项目下的 `Generate` 有案例展示。
 
-## Thanks
-
-1. Locus : https://github.com/hzfanfei/locus
-1. HookZz : https://github.com/jmpews/HookZz
-1. catapult : https://github.com/catapult-project/catapult
-1. AppleTrace : https://github.com/everettjf/AppleTrace
-1. fishhook : https://github.com/facebook/fishhook
-
 ## Quick start
 
 AppTrace is available through [CocoaPods](https://cocoapods.org). To install
@@ -55,6 +47,14 @@ Import the framework header，then call start method.
 // call it wherever you want, pefer to call in main.m like Example
 [AppTrace start];
 ```
+
+## Thanks
+
+1. Locus : https://github.com/hzfanfei/locus
+1. HookZz : https://github.com/jmpews/HookZz
+1. catapult : https://github.com/catapult-project/catapult
+1. AppleTrace : https://github.com/everettjf/AppleTrace
+1. fishhook : https://github.com/facebook/fishhook
 
 ## License
 
