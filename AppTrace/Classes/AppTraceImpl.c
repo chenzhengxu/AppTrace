@@ -84,7 +84,7 @@ void write_method_log(char* obj, char* sel, uint64_t beginElapsed, uint64_t endE
 //    printf("%s", log);
     free(repl_name);
     dispatch_async(queue_, ^{
-        fprintf(_log_file, "%s", log);
+        fputs(log, _log_file);
         free(log);
     });
 }
