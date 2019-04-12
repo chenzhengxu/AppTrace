@@ -7,7 +7,7 @@
 //
 
 @import UIKit;
-#import "NEPAppDelegate.h"
+#import "AppDelegate.h"
 #import "AppTrace.h"
 
 int main(int argc, char * argv[])
@@ -15,6 +15,6 @@ int main(int argc, char * argv[])
     [AppTrace setMinDuration:3];
     [AppTrace startTrace];
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([NEPAppDelegate class]));
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
 }

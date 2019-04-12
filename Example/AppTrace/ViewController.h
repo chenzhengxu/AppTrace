@@ -1,5 +1,5 @@
 //
-//  NEPViewController.h
+//  ViewController.h
 //  AppTrace
 //
 //  Created by chenzhengxu2 on 04/08/2019.
@@ -8,6 +8,6 @@
 
 @import UIKit;
 
-@interface NEPViewController : UIViewController
+@interface ViewController : UIViewController
 
 @end

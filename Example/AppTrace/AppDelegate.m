@@ -1,15 +1,15 @@
 //
-//  NEPAppDelegate.m
+//  AppDelegate.m
 //  AppTrace
 //
 //  Created by chenzhengxu2 on 04/08/2019.
 //  Copyright (c) 2019 chenzhengxu2. All rights reserved.
 //
 
-#import "NEPAppDelegate.h"
+#import "AppDelegate.h"
 #import "DoraemonManager.h"
 
-@implementation NEPAppDelegate
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

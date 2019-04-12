@@ -1,5 +1,5 @@
 //
-//  NEPAppDelegate.h
+//  AppDelegate.h
 //  AppTrace
 //
 //  Created by chenzhengxu2 on 04/08/2019.
@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@interface NEPAppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
