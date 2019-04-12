@@ -45,7 +45,7 @@ Import the framework header，then call start method.
 #import "AppTrace.h"
 
 // call it wherever you want, pefer to call in main.m like Example
-[AppTrace start];
+[AppTrace startTrace];
 ```
 
 ## Thanks
