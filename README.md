@@ -13,7 +13,7 @@
 
 ## How it works
 
-通过 [fishhook](https://github.com/facebook/fishhook) 钩住 `objc_msg_send` 方法，在替代的方法中实现参数寄存器值的保存与恢复，从而在原始的 `objc_msg_send` 方法前后调用自定义方法，又不影响本身函数的调用，在 `arm64` 下的大致逻辑是􏰀􏰁􏰂􏰁􏰃：
+通过 [fishhook](https://github.com/facebook/fishhook) 钩住 `objc_msg_send` 方法，在替代的方法中实现参数寄存器值的保存与恢复，从而在原始的 `objc_msg_send` 方法前后调用自定义方法，又不影响本身函数的调用，在 `arm64` 下的大致逻辑是：
 
 ```
 保存寄存器x0 - x8，q0 - q7到栈上，
