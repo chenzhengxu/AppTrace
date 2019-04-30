@@ -322,7 +322,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/DoraemonKit/DoraemonKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -331,7 +331,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AppTrace_Example/Pods-AppTrace_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F0B64A641AC291F3CCF486F3 /* [CP] Check Pods Manifest.lock */ = {

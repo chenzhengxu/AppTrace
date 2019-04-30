@@ -8,9 +8,14 @@
 #import "AppTrace.h"
 #include "AppTraceImpl.h"
 
+static TraceFileCachePattern kFileCachePattern = 0;
 static int kAppTraceStarted = 0;
 
 @implementation AppTrace
+
++ (void)setTraceFileCachePattern:(TraceFileCachePattern)pattern {
+    kFileCachePattern = pattern;
+}
 
 + (void)startTrace {
     if (kAppTraceStarted != 0) {
@@ -18,14 +23,17 @@ static int kAppTraceStarted = 0;
         return;
     }
     kAppTraceStarted = 1;
-    NSString * rootdir = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-    NSString *work_dir = [rootdir stringByAppendingPathComponent:@"apptrace"];
+    NSString *rootdir = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
     NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:work_dir]) {
+    NSString *work_dir = [rootdir stringByAppendingPathComponent:@"apptrace"];
+    if ([fm fileExistsAtPath:work_dir] && kFileCachePattern == TraceFileCachePatternSingle) {
         [fm removeItemAtPath:work_dir error:nil];
     }
-    [fm createDirectoryAtPath:work_dir withIntermediateDirectories:YES attributes:nil error:nil];
-    NSString * log_name = @"trace.json";
+    if (![fm fileExistsAtPath:work_dir]) {
+        [fm createDirectoryAtPath:work_dir withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
+    NSString *log_name = [NSString stringWithFormat:@"trace_%.f.json", timeInterval];
     char *log_path = (char *)[[work_dir stringByAppendingPathComponent:log_name] UTF8String];
     
     lcs_start(log_path);

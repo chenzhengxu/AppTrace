@@ -7,7 +7,18 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, TraceFileCachePattern) {
+    TraceFileCachePatternMultiple = 0,      // 保存历史追踪文件
+    TraceFileCachePatternSingle,            // 每次启动删除历史文件
+};
+
 @interface AppTrace : NSObject
+
+/**
+ 设置追踪文件缓存方案
+ 在+ (void)startTrace;方法之前调用
+ */
++ (void)setTraceFileCachePattern:(TraceFileCachePattern)pattern;
 
 // 开始检测
 + (void)startTrace;
